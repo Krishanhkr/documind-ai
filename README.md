@@ -18,3 +18,6 @@ A Flask-based web app that extracts text from uploaded documents, generates AI-p
 ```bash
 pip install -r requirements.txt
 python app.py
+
+Live Demo (soon): [https://documind-ai.onrender.com](https://documind-ai.onrender.com)
+
