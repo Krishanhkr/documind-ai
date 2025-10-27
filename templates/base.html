@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DocuMind AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-100 font-sans text-gray-900">
+  <header class="bg-white shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-indigo-600">DocuMind AI</h1>
+    <nav>
+      <a href="/" class="hover:text-indigo-600 text-gray-700">Home</a>
+    </nav>
+  </header>
+  <main class="container mx-auto p-6">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
