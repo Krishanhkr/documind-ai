@@ -1,16 +1,29 @@
-from transformers import pipeline
+# utils/ai_summary.py
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lex_rank import LexRankSummarizer
+import nltk
 
-def generate_summary(text):
+# Ensure punkt downloaded
+try:
+    nltk.data.find("tokenizers/punkt")
+except Exception:
+    nltk.download("punkt")
+
+def generate_summary(text, sentences_count=5):
+    """Lightweight summarizer using LexRank (sumy). Works well for Render."""
+    if not text:
+        return "No content found in document."
+    # cap text length for performance; if huge, trim to first N chars
+    if len(text) > 200000:
+        text = text[:200000]
+
     try:
-        summarizer = pipeline("summarization", model="facebook/bart-large-cnn", framework="pt", device=-1)
-    except Exception:
-        return "AI summarizer not available on this deployment. Please run locally for full features."
-
-    if not text or len(text) < 300:
-        return text or "No content found."
-    parts = [text[i:i + 1000] for i in range(0, len(text), 1000)]
-    summary = []
-    for p in parts:
-        out = summarizer(p, max_length=150, min_length=50, do_sample=False)
-        summary.append(out[0]['summary_text'])
-    return " ".join(summary)
+        parser = PlaintextParser.from_string(text, Tokenizer("english"))
+        summarizer = LexRankSummarizer()
+        summary_sentences = summarizer(parser.document, sentences_count)
+        summary = " ".join(str(s) for s in summary_sentences)
+        return summary if summary.strip() else (text[:1000] + "...")
+    except Exception as e:
+        # fallback: return leading text if summarizer fails
+        return text[:1200] + ("..." if len(text) > 1200 else "")
